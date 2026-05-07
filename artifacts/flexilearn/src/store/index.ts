@@ -41,6 +41,11 @@ export interface InteractionEntry {
   topics: string[];
 }
 
+export interface ProfileOverride {
+  learningStyle: string;
+  neuroProfile: string;
+}
+
 const idleAgent = (): AgentState => ({
   status: "idle",
   progressPercent: 0,
@@ -70,21 +75,27 @@ const defaultAccessibility = (): AccessibilitySettings => ({
 
 interface FlexiLearnStore {
   profile: FlexiLearnProfile | null;
+  profileOverride: ProfileOverride | null;
   topicMastery: Record<string, TopicMastery>;
   engagementScore: number;
   sessionInteractions: number;
+  xp: number;
   currentConversationId: number | null;
   agents: Record<AgentId, AgentState>;
   accessibility: AccessibilitySettings;
   interactionHistory: InteractionEntry[];
 
   setProfile: (profile: FlexiLearnProfile | null) => void;
+  setProfileOverride: (override: ProfileOverride | null) => void;
+  getActiveStyle: () => string;
+  getActiveNeuro: () => string;
   recordTopicInteraction: (topic: string, subject: string, scoreBoost: number) => void;
   updateAgent: (id: AgentId, patch: Partial<AgentState>) => void;
   resetAgents: () => void;
   setConversationId: (id: number | null) => void;
   addInteraction: (question: string, topics: string[]) => void;
   incrementEngagement: (amount?: number) => void;
+  addXP: (amount: number) => void;
   setAccessibility: (patch: Partial<AccessibilitySettings>) => void;
   getWeakTopics: () => TopicMastery[];
   getMasteredTopics: () => TopicMastery[];
@@ -95,15 +106,29 @@ export const useFlexiLearnStore = create<FlexiLearnStore>()(
   persist(
     (set, get) => ({
       profile: null,
+      profileOverride: null,
       topicMastery: {},
       engagementScore: 0,
       sessionInteractions: 0,
+      xp: 0,
       currentConversationId: null,
       agents: defaultAgents(),
       accessibility: defaultAccessibility(),
       interactionHistory: [],
 
       setProfile: (profile) => set({ profile }),
+
+      setProfileOverride: (override) => set({ profileOverride: override }),
+
+      getActiveStyle: () => {
+        const s = get();
+        return s.profileOverride?.learningStyle ?? s.profile?.learningStyle ?? "reading_writing";
+      },
+
+      getActiveNeuro: () => {
+        const s = get();
+        return s.profileOverride?.neuroProfile ?? s.profile?.neuroProfile ?? "none";
+      },
 
       recordTopicInteraction: (topic, subject, scoreBoost) => {
         const current = get().topicMastery;
@@ -152,6 +177,10 @@ export const useFlexiLearnStore = create<FlexiLearnStore>()(
         set({ engagementScore: Math.min(100, get().engagementScore + amount) });
       },
 
+      addXP: (amount) => {
+        set({ xp: get().xp + amount });
+      },
+
       setAccessibility: (patch) => {
         set({ accessibility: { ...get().accessibility, ...patch } });
       },
@@ -171,7 +200,7 @@ export const useFlexiLearnStore = create<FlexiLearnStore>()(
       clearTopics: () => set({ topicMastery: {}, interactionHistory: [], engagementScore: 0, sessionInteractions: 0 }),
     }),
     {
-      name: "flexilearn-store-v2",
+      name: "flexilearn-store-v3",
       partialize: (state) => ({
         profile: state.profile,
         topicMastery: state.topicMastery,
@@ -179,6 +208,7 @@ export const useFlexiLearnStore = create<FlexiLearnStore>()(
         interactionHistory: state.interactionHistory,
         accessibility: state.accessibility,
         currentConversationId: state.currentConversationId,
+        xp: state.xp,
       }),
     }
   )

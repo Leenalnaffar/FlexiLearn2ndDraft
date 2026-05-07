@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { BookOpen, BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp } from "lucide-react";
+import { BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp } from "lucide-react";
 import { useGetCurrentLearnerProfile } from "@workspace/api-client-react";
 import { useEffect } from "react";
 import AgentCommandCenter from "@/components/agent-command-center";
@@ -12,6 +12,20 @@ const navItems = [
   { href: "/analytics", label: "Progress Analytics", icon: TrendingUp },
   { href: "/accessibility", label: "Accessibility Settings", icon: Settings },
 ];
+
+const STYLE_OPTIONS = [
+  { key: "visual", label: "👁 Visual" },
+  { key: "auditory", label: "👂 Audio" },
+  { key: "kinesthetic", label: "🤲 Kines." },
+  { key: "reading_writing", label: "📖 R/W" },
+] as const;
+
+const NEURO_OPTIONS = [
+  { key: "none", label: "⚖ Standard" },
+  { key: "adhd", label: "⚡ ADHD" },
+  { key: "autism", label: "🔍 Autism" },
+  { key: "dyslexia", label: "📝 Dyslexia" },
+] as const;
 
 function formatLearningStyle(style: string): string {
   const map: Record<string, string> = {
@@ -42,7 +56,8 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, title, noPadding }: DashboardLayoutProps) {
   const [location] = useLocation();
   const { data: profile } = useGetCurrentLearnerProfile();
-  const setProfile = useFlexiLearnStore((s) => s.setProfile);
+  const store = useFlexiLearnStore();
+  const { setProfile, setProfileOverride, profileOverride, getActiveStyle, getActiveNeuro } = store;
 
   useEffect(() => {
     if (profile) {
@@ -54,10 +69,24 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
     }
   }, [profile, setProfile]);
 
+  const activeStyle = getActiveStyle();
+  const activeNeuro = getActiveNeuro();
+
+  function handleStyleSwitch(style: string) {
+    setProfileOverride({ learningStyle: style, neuroProfile: activeNeuro });
+  }
+
+  function handleNeuroSwitch(neuro: string) {
+    setProfileOverride({ learningStyle: activeStyle, neuroProfile: neuro });
+  }
+
+  const isOverriding = profileOverride !== null;
+
   return (
     <div className="flex h-screen bg-background overflow-hidden" data-testid="dashboard-layout">
       {/* Left Sidebar */}
       <aside className="w-64 flex-shrink-0 flex flex-col" style={{ backgroundColor: "#1A202C" }} data-testid="sidebar">
+        {/* Logo */}
         <div className="px-6 py-5 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "hsl(228 66% 54%)" }}>
@@ -70,7 +99,8 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto" data-testid="sidebar-nav">
+        {/* Nav */}
+        <nav className="px-3 py-4 space-y-0.5 border-b border-white/10" data-testid="sidebar-nav">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = location === href || (href === "/workspace" && location === "/");
             return (
@@ -93,7 +123,71 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
           })}
         </nav>
 
-        <div className="px-3 py-4 border-t border-white/10">
+        {/* Quick Switch */}
+        <div className="px-3 py-3 border-b border-white/10 flex-shrink-0">
+          <div className="flex items-center justify-between mb-2 px-1">
+            <p className="text-white/30 text-[9px] uppercase tracking-widest font-bold">Quick Switch</p>
+            {isOverriding && (
+              <button
+                onClick={() => setProfileOverride(null)}
+                className="text-[9px] text-white/30 hover:text-white/60 transition-colors"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+
+          {/* Learning Style */}
+          <div className="mb-2.5">
+            <p className="text-white/25 text-[9px] uppercase tracking-widest mb-1.5 px-1">Learning Style</p>
+            <div className="grid grid-cols-2 gap-1">
+              {STYLE_OPTIONS.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => handleStyleSwitch(key)}
+                  className={cn(
+                    "text-[10px] px-2 py-1.5 rounded-md font-semibold transition-all text-left leading-none",
+                    activeStyle === key
+                      ? "bg-blue-500 text-white shadow-sm"
+                      : "bg-white/8 text-white/50 hover:bg-white/15 hover:text-white/80"
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Neuroprofile */}
+          <div>
+            <p className="text-white/25 text-[9px] uppercase tracking-widest mb-1.5 px-1">Neuroprofile</p>
+            <div className="grid grid-cols-2 gap-1">
+              {NEURO_OPTIONS.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => handleNeuroSwitch(key)}
+                  className={cn(
+                    "text-[10px] px-2 py-1.5 rounded-md font-semibold transition-all text-left leading-none",
+                    activeNeuro === key
+                      ? "bg-purple-500 text-white shadow-sm"
+                      : "bg-white/8 text-white/50 hover:bg-white/15 hover:text-white/80"
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {isOverriding && (
+            <p className="text-[9px] text-yellow-400/70 mt-2 px-1">
+              ⚡ Session override active
+            </p>
+          )}
+        </div>
+
+        {/* Profile footer */}
+        <div className="px-3 py-4 mt-auto">
           <div className="px-3 py-3 rounded-lg" style={{ backgroundColor: "rgba(255,255,255,0.05)" }} data-testid="sidebar-profile">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
@@ -102,8 +196,8 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
             {profile ? (
               <div className="space-y-1">
                 <p className="text-white/90 text-sm font-medium">{profile.displayName}</p>
-                <p className="text-blue-300 text-xs">{formatLearningStyle(profile.learningStyle)}</p>
-                <p className="text-green-300/80 text-xs">{formatProfile(profile.neurodivergentProfile)}</p>
+                <p className="text-blue-300 text-xs">{formatLearningStyle(activeStyle)}</p>
+                <p className="text-green-300/80 text-xs">{formatProfile(activeNeuro)}</p>
               </div>
             ) : (
               <p className="text-white/40 text-xs">No profile set</p>
@@ -121,10 +215,11 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
           <div className="flex items-center gap-2">
             {profile ? (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-background" data-testid="header-profile-badge">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-xs font-medium text-foreground">{formatLearningStyle(profile.learningStyle)}</span>
+                <div className={cn("w-1.5 h-1.5 rounded-full", isOverriding ? "bg-yellow-400 animate-pulse" : "bg-green-400 animate-pulse")} />
+                <span className="text-xs font-medium text-foreground">{formatLearningStyle(activeStyle)}</span>
                 <span className="text-border">|</span>
-                <span className="text-xs text-muted-foreground">{formatProfile(profile.neurodivergentProfile)}</span>
+                <span className="text-xs text-muted-foreground">{formatProfile(activeNeuro)}</span>
+                {isOverriding && <span className="text-[10px] text-yellow-600 font-bold">OVERRIDE</span>}
               </div>
             ) : (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-background">

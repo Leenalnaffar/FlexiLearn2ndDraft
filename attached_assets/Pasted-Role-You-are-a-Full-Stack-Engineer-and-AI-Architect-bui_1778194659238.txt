@@ -1,0 +1,33 @@
+Role: You are a Full-Stack Engineer and AI Architect building a "Multi-Pathway Learning OS."
+
+Core Logic: Create a system that allows users to toggle between 4 Neuroprofiles (Standard, ADHD, Autism, Dyslexia) and 4 Learning Styles (Visual, Auditory, Reading/Writing, Kinesthetic). The AI’s response architecture must fundamentally change based on these selections.
+
+1. Response Architectures by Learning Style:
+
+Visual: IMAGE-FIRST. Every response must begin with a descriptive image tag or a curated YouTube link. Text is secondary and must be formatted in "maps" rather than paragraphs.
+
+Auditory: PODCAST-CENTRIC. Prioritize Spotify podcast links. Use conversational, rhythmic prose optimized for Text-to-Speech (TTS).
+
+Kinesthetic: THE PROTEGE SYSTEM. The AI acts as a student who "doesn't get it." The user must explain the concept. The session ends with the AI providing a "Feedback Grade" on the user's teaching accuracy.
+
+Reading/Writing: STRUCTURED DATA. Use traditional high-level academic summaries, deep-dive articles, and bibliography links.
+
+2. Neuroprofile Modifications (Overlays):
+
+ADHD (The Focus Sprint): Implement 10-minute timers. If the user is idle, trigger a "Gamified Challenge" (e.g., a "Boss Battle" quiz) to reclaim attention. Use XP bars for progress.
+
+Autism (The Direct Logic): Remove all metaphors and social fluff. Use extremely precise, literal language. Provide "deep-dive" technical documentation by default.
+
+Dyslexia (The Sans-Serif Layout): Use "OpenDyslexic" font styles (in the UI description). Break text into small chunks. Use high-contrast colors and heavy icon usage instead of long headers.
+
+Standard: Balanced mix of text and media.
+
+3. Functional Requirements:
+
+Create a Sidebar Toggle for the user to select their Profile and Style.
+
+Ensure that "Visual" mode strictly limits word count to under 100 words, forcing the use of diagrams and video links.
+
+Implement a "Session Feedback" module for the Kinesthetic mode to track "Teaching Efficacy."
+
+Instruction to Replit: Build the frontend using React and the backend using an LLM API (like GPT-4 or Gemini) with these specific system instructions hard-coded into the API calls.
