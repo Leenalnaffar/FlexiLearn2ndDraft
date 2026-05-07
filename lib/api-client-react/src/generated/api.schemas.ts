@@ -162,6 +162,42 @@ export interface AgentStatus {
   currentTask?: string;
 }
 
+export interface OpenaiConversation {
+  id: number;
+  title: string;
+  createdAt: string;
+}
+
+export interface OpenaiMessage {
+  id: number;
+  conversationId: number;
+  role: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface OpenaiConversationWithMessages {
+  id: number;
+  title: string;
+  createdAt: string;
+  messages: OpenaiMessage[];
+}
+
+export interface CreateOpenaiConversationBody {
+  title: string;
+}
+
+export interface SendOpenaiMessageBody {
+  content: string;
+  learningStyle?: string;
+  neuroProfile?: string;
+  topicContext?: string;
+}
+
+export interface OpenaiError {
+  error: string;
+}
+
 export type CreateLearnerProfileBodyLearningStyle =
   (typeof CreateLearnerProfileBodyLearningStyle)[keyof typeof CreateLearnerProfileBodyLearningStyle];
 

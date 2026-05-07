@@ -6,6 +6,7 @@ import skillsRouter from "./skills";
 import lessonsRouter from "./lessons";
 import progressRouter from "./progress";
 import agentsRouter from "./agents";
+import openaiRouter from "./openai/index";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(skillsRouter);
 router.use(lessonsRouter);
 router.use(progressRouter);
 router.use(agentsRouter);
+router.use(openaiRouter);
 
 export default router;

@@ -15,7 +15,7 @@ import TopicSelector from "@/components/topic-selector";
 import LearningRoadmap from "@/components/learning-roadmap";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Flame, Target, TrendingUp, Clock, ChevronRight, Award } from "lucide-react";
+import { BookOpen, Flame, Target, TrendingUp, Clock, ChevronRight, Award, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function StatCard({
@@ -26,7 +26,7 @@ function StatCard({
 }: {
   label: string;
   value: string | number;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
   color: string;
 }) {
   return (

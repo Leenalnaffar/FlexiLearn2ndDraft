@@ -1,0 +1,288 @@
+You are redesigning and restructuring the existing FlexiLearn platform into a REAL connected multi-agent adaptive learning system.
+
+IMPORTANT:
+The current version has disconnected UI sections and fake/static agent data. The system must now become fully dynamic, context-aware, and agent-driven.
+
+MAIN PROBLEM TO FIX:
+Right now:
+- the chatbot is disconnected from the dashboard,
+- the agents do not actually affect the platform,
+- the sidebar data is static and unrelated,
+- profile selections are ignored,
+- Skills Mastery shows irrelevant ADHD strategies even when the user selected Standard Mode,
+- the agents do not share memory/context,
+- pages behave independently instead of as one connected system.
+
+This must be completely fixed.
+
+---------------------------------------------------
+CORE GOAL
+---------------------------------------------------
+
+Transform the website into a connected agentic learning platform where:
+- all agents share memory,
+- all pages update dynamically,
+- user interactions affect the system globally,
+- the selected learning profile controls the entire experience,
+- the chatbot becomes part of the multi-agent workflow,
+- the dashboard reflects REAL interaction data.
+
+The system should feel like a coordinated AI operating system, NOT isolated pages.
+
+---------------------------------------------------
+NEW FEATURE TO ADD
+---------------------------------------------------
+
+Add a central AI Learning Workspace page where the student can directly interact with the agents.
+
+This should NOT look like a basic chatbot.
+
+The workspace must include:
+- a conversation panel,
+- active agent status,
+- adaptive lesson area,
+- memory/context tracking,
+- live agent actions,
+- personalized recommendations.
+
+---------------------------------------------------
+MAIN LAYOUT
+---------------------------------------------------
+
+LEFT SIDEBAR:
+- My Learning Path
+- Skills Mastery
+- Accessibility Settings
+- Agent Workspace
+- Progress Analytics
+
+CENTER AREA:
+Dynamic adaptive learning workspace:
+- AI conversation area
+- lesson generation
+- quizzes
+- diagrams
+- summaries
+- visual learning content
+- adaptive responses
+
+RIGHT SIDEBAR:
+AGENT COMMAND CENTER:
+Shows REAL agent activity in real time:
+- Profiling Agent
+- Planning Agent
+- NeuroAdapt Agent
+- Observation Agent
+- Reflection Agent
+- Progress Tracking Agent
+
+Each agent must display:
+- status,
+- current task,
+- latest decision,
+- observations,
+- outputs generated.
+
+---------------------------------------------------
+CRITICAL SYSTEM FIX
+---------------------------------------------------
+
+The entire application must now use SHARED GLOBAL MEMORY.
+
+Create a centralized memory/context state system using:
+- React Context API or Zustand.
+
+ALL pages and agents must read/write from the SAME memory.
+
+The memory should store:
+- selected learning style,
+- neuro profile,
+- student questions,
+- engagement history,
+- lesson history,
+- quiz results,
+- focus patterns,
+- generated lessons,
+- progress scores,
+- weak topics,
+- mastered topics,
+- interaction history.
+
+---------------------------------------------------
+PROFILE FIX
+---------------------------------------------------
+
+The selected profile MUST control the entire platform.
+
+Example:
+If user selects:
+- Visual Learner
+- Standard Mode
+
+THEN:
+- no ADHD strategies should appear,
+- no neurodivergent adaptations should activate,
+- content should prioritize diagrams/charts/visual summaries,
+- skills mastery should reflect actual academic topics,
+- recommendations should match visual learning only.
+
+If ADHD mode is selected:
+THEN activate:
+- focus mode,
+- microlearning,
+- timers,
+- chunked lessons,
+- engagement reinforcement.
+
+The platform must dynamically adapt based on the active profile.
+
+---------------------------------------------------
+AGENTIC WORKFLOW
+---------------------------------------------------
+
+Implement a REAL agent workflow loop:
+
+1. PLAN
+Planning Agent:
+- analyzes student goal,
+- breaks lesson into steps,
+- selects teaching strategy.
+
+2. ACT
+Content Agent:
+- generates lesson,
+- creates quizzes,
+- creates diagrams,
+- produces explanations.
+
+3. OBSERVE
+Observation Agent:
+- tracks engagement,
+- monitors quiz accuracy,
+- observes interaction behavior.
+
+4. REFLECT
+Reflection Agent:
+- evaluates effectiveness,
+- updates strategy,
+- modifies future lessons.
+
+This workflow must happen after EVERY student interaction.
+
+---------------------------------------------------
+CHAT SYSTEM REQUIREMENTS
+---------------------------------------------------
+
+The student conversation system must now:
+- connect directly to agent memory,
+- update dashboards dynamically,
+- influence progress tracking,
+- influence skills mastery,
+- influence recommendations,
+- influence lesson generation.
+
+Example:
+If student asks many algebra questions:
+- algebra becomes tracked topic,
+- mastery updates,
+- planner adapts future lessons,
+- observation agent logs struggle areas,
+- reflection agent revises strategy.
+
+The system must feel alive and interconnected.
+
+---------------------------------------------------
+REMOVE FAKE DATA
+---------------------------------------------------
+
+Remove all hardcoded/static placeholder content.
+
+Replace with:
+- dynamic generated data,
+- context-aware recommendations,
+- real agent outputs,
+- live adaptation.
+
+No fake percentages.
+No unrelated ADHD strategies.
+No disconnected widgets.
+
+---------------------------------------------------
+SKILLS MASTERY PAGE FIX
+---------------------------------------------------
+
+Skills Mastery should now:
+- display actual academic topics,
+- update from user interactions,
+- reflect quiz performance,
+- reflect learning progress,
+- show weak/strong subjects,
+- adapt to the selected learning profile.
+
+Example:
+If user studies Biology:
+- mastery shows Biology skills,
+- not ADHD life strategies.
+
+---------------------------------------------------
+ACCESSIBILITY SETTINGS
+---------------------------------------------------
+
+Accessibility settings should dynamically alter:
+- spacing,
+- font size,
+- reading mode,
+- audio mode,
+- sensory reduction,
+- dyslexia-friendly formatting.
+
+Changes must affect the entire platform globally.
+
+---------------------------------------------------
+DESIGN REQUIREMENTS
+---------------------------------------------------
+
+Keep the existing futuristic clean UI style.
+
+Add:
+- smooth animations,
+- live agent status updates,
+- loading states,
+- dynamic transitions,
+- adaptive cards,
+- agent workflow visualizations.
+
+The platform should feel like:
+“an AI-powered adaptive operating system for education.”
+
+NOT a chatbot.
+
+---------------------------------------------------
+TECH STACK
+---------------------------------------------------
+
+Frontend:
+- React
+- Tailwind
+- Framer Motion
+
+State Management:
+- Zustand or React Context
+
+Backend:
+- Node.js
+
+AI:
+- OpenAI or Gemini API
+
+---------------------------------------------------
+FINAL IMPORTANT REQUIREMENT
+---------------------------------------------------
+
+Every component in the app must now be connected through shared memory and agent communication.
+
+No isolated pages.
+No fake UI.
+No unrelated recommendations.
+
+The entire system must behave as one coordinated adaptive multi-agent learning ecosystem.
