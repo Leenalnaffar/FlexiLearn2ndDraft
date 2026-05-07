@@ -7,8 +7,8 @@ import { useFlexiLearnStore } from "@/store";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/skills", label: "Skills Mastery", icon: BarChart2 },
   { href: "/workspace", label: "Start Learning", icon: Brain },
+  { href: "/skills", label: "Skills Mastery", icon: BarChart2 },
   { href: "/analytics", label: "Progress Analytics", icon: TrendingUp },
   { href: "/accessibility", label: "Accessibility Settings", icon: Settings },
 ];
