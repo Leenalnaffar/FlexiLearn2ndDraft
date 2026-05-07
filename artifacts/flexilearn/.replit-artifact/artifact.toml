@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "FlexiLearn"
+version = "1.0.0"
+id = "artifacts/flexilearn"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22970
+
+[services.development]
+run = "pnpm --filter @workspace/flexilearn run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/flexilearn", "run", "build" ]
+publicDir = "artifacts/flexilearn/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22970"
+BASE_PATH = "/"

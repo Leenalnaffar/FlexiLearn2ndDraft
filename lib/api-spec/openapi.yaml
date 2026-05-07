@@ -3,20 +3,31 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: FlexiLearn educational platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: learner
+    description: Learner profile operations
+  - name: paths
+    description: Learning path operations
+  - name: skills
+    description: Skills mastery operations
+  - name: lessons
+    description: Lesson content operations
+  - name: progress
+    description: Progress tracking operations
+  - name: agents
+    description: Agent system status operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,204 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /learner-profiles:
+    post:
+      operationId: createLearnerProfile
+      tags: [learner]
+      summary: Create learner profile (onboarding)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                learningStyle:
+                  type: string
+                  enum: [visual, auditory, kinesthetic, reading_writing]
+                neurodivergentProfile:
+                  type: string
+                  enum: [none, adhd, dyslexia, autism, anxiety, combined]
+                displayName:
+                  type: string
+              required: [learningStyle, neurodivergentProfile, displayName]
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LearnerProfile"
+
+  /learner-profiles/current:
+    get:
+      operationId: getCurrentLearnerProfile
+      tags: [learner]
+      summary: Get current learner profile
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LearnerProfile"
+        "404":
+          description: No profile found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /learning-paths:
+    get:
+      operationId: getLearningPaths
+      tags: [paths]
+      summary: Get all learning paths
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LearningPath"
+
+  /learning-paths/{id}:
+    get:
+      operationId: getLearningPath
+      tags: [paths]
+      summary: Get a specific learning path
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LearningPath"
+
+  /skills:
+    get:
+      operationId: getSkills
+      tags: [skills]
+      summary: Get all skills with mastery levels
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+
+  /lessons/{id}:
+    get:
+      operationId: getLesson
+      tags: [lessons]
+      summary: Get a specific lesson
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lesson"
+
+  /lessons/{id}/complete:
+    post:
+      operationId: completeLesson
+      tags: [lessons]
+      summary: Mark a lesson as complete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LessonProgress"
+
+  /progress/summary:
+    get:
+      operationId: getProgressSummary
+      tags: [progress]
+      summary: Get dashboard progress summary
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressSummary"
+
+  /agents/status:
+    get:
+      operationId: getAgentsStatus
+      tags: [agents]
+      summary: Get all agent system statuses
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AgentStatus"
+
+  /agents/{id}/status:
+    patch:
+      operationId: updateAgentStatus
+      tags: [agents]
+      summary: Update a specific agent's status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [idle, active, loading, complete, error]
+                progressPercent:
+                  type: number
+                currentTask:
+                  type: string
+              required: [status]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentStatus"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +240,175 @@ components:
       properties:
         status:
           type: string
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]
+
+    LearnerProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        learningStyle:
+          type: string
+          enum: [visual, auditory, kinesthetic, reading_writing]
+        neurodivergentProfile:
+          type: string
+          enum: [none, adhd, dyslexia, autism, anxiety, combined]
+        displayName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, learningStyle, neurodivergentProfile, displayName, createdAt]
+
+    LearningPath:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        totalLessons:
+          type: integer
+        completedLessons:
+          type: integer
+        progressPercent:
+          type: number
+        estimatedHours:
+          type: number
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        isActive:
+          type: boolean
+        lessons:
+          type: array
+          items:
+            $ref: "#/components/schemas/Lesson"
       required:
-        - status
+        [id, title, description, category, totalLessons, completedLessons, progressPercent, estimatedHours, difficulty, isActive]
+
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        masteryLevel:
+          type: number
+          description: 0-100 mastery percentage
+        level:
+          type: string
+          enum: [novice, beginner, intermediate, advanced, expert]
+        lastPracticed:
+          type: string
+          format: date-time
+      required: [id, name, category, masteryLevel, level]
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        content:
+          type: string
+        type:
+          type: string
+          enum: [video, reading, interactive, quiz, project]
+        durationMinutes:
+          type: integer
+        isCompleted:
+          type: boolean
+        order:
+          type: integer
+        pathId:
+          type: integer
+      required: [id, title, description, content, type, durationMinutes, isCompleted, order, pathId]
+
+    LessonProgress:
+      type: object
+      properties:
+        lessonId:
+          type: integer
+        isCompleted:
+          type: boolean
+        completedAt:
+          type: string
+          format: date-time
+      required: [lessonId, isCompleted, completedAt]
+
+    ProgressSummary:
+      type: object
+      properties:
+        totalLessonsCompleted:
+          type: integer
+        totalActivePaths:
+          type: integer
+        overallProgressPercent:
+          type: number
+        currentStreak:
+          type: integer
+        weeklyGoalPercent:
+          type: number
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+        skillsImprovedThisWeek:
+          type: integer
+      required:
+        [totalLessonsCompleted, totalActivePaths, overallProgressPercent, currentStreak, weeklyGoalPercent, recentActivity, skillsImprovedThisWeek]
+
+    ActivityItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        type:
+          type: string
+          enum: [lesson_complete, skill_leveled, path_started, streak_milestone]
+      required: [id, description, timestamp, type]
+
+    AgentStatus:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [idle, active, loading, complete, error]
+        progressPercent:
+          type: number
+        lastUpdated:
+          type: string
+          format: date-time
+        currentTask:
+          type: string
+      required: [id, name, description, status, lastUpdated]
 
