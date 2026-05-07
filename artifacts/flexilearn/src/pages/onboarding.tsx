@@ -11,19 +11,17 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 const LEARNING_STYLES = [
-  { value: "visual", label: "Visual", description: "You learn best through diagrams, charts, and spatial understanding" },
-  { value: "auditory", label: "Auditory", description: "You absorb information through listening, discussion, and verbal instruction" },
-  { value: "kinesthetic", label: "Kinesthetic", description: "Hands-on experience and physical engagement help you learn best" },
-  { value: "reading_writing", label: "Reading / Writing", description: "Written text, note-taking, and reading are your strongest modalities" },
+  { value: "visual",         label: "Visual",          description: "You learn best through diagrams, charts, and spatial understanding" },
+  { value: "auditory",       label: "Auditory",        description: "You absorb information through listening, discussion, and verbal instruction" },
+  { value: "kinesthetic",    label: "Kinesthetic",     description: "Hands-on experience and physical engagement help you learn best" },
+  { value: "reading_writing",label: "Reading / Writing", description: "Written text, note-taking, and reading are your strongest modalities" },
 ] as const;
 
 const NEURO_PROFILES = [
-  { value: "none", label: "Standard", description: "No specific neurodivergent profile" },
-  { value: "adhd", label: "ADHD", description: "Attention deficit / hyperactivity — short bursts, frequent breaks" },
-  { value: "dyslexia", label: "Dyslexia", description: "Reading support with dyslexic-friendly fonts and formatting" },
-  { value: "autism", label: "Autism", description: "Structured routines, explicit instructions, minimal ambiguity" },
-  { value: "anxiety", label: "Anxiety", description: "Low-pressure pacing with calming presentation and reassurance" },
-  { value: "combined", label: "Combined", description: "Multiple intersecting profiles — maximum adaptive support" },
+  { value: "none",      label: "Standard",  description: "No specific neurodivergent profile" },
+  { value: "adhd",      label: "ADHD",      description: "Attention deficit / hyperactivity — short bursts, frequent breaks" },
+  { value: "dyslexia",  label: "Dyslexia",  description: "Reading support with dyslexic-friendly fonts and formatting" },
+  { value: "autism",    label: "Autism",    description: "Structured routines, explicit instructions, minimal ambiguity" },
 ] as const;
 
 const step1Schema = z.object({
@@ -31,7 +29,7 @@ const step1Schema = z.object({
 });
 
 const step2Schema = z.object({
-  neurodivergentProfile: z.enum(["none", "adhd", "dyslexia", "autism", "anxiety", "combined"]),
+  neurodivergentProfile: z.enum(["none", "adhd", "dyslexia", "autism"]),
 });
 
 const step3Schema = z.object({
@@ -159,6 +157,7 @@ export default function OnboardingPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl border border-border shadow-md overflow-hidden">
+
           {/* Step 1 — Learning Style */}
           {step === 1 && (
             <Form {...step1Form}>
@@ -224,7 +223,7 @@ export default function OnboardingPage() {
             </Form>
           )}
 
-          {/* Step 2 — Neurodivergent Profile */}
+          {/* Step 2 — Neurodivergent Profile (4 options only) */}
           {step === 2 && (
             <Form {...step2Form}>
               <form onSubmit={step2Form.handleSubmit(handleStep2Submit)} data-testid="step2-form">
@@ -238,7 +237,7 @@ export default function OnboardingPage() {
                     name="neurodivergentProfile"
                     render={({ field }) => (
                       <FormItem>
-                        <div className="grid grid-cols-2 gap-2.5">
+                        <div className="grid grid-cols-2 gap-3">
                           {NEURO_PROFILES.map((profile) => (
                             <FormControl key={profile.value}>
                               <button
@@ -246,16 +245,16 @@ export default function OnboardingPage() {
                                 data-testid={`neuro-profile-${profile.value}`}
                                 onClick={() => field.onChange(profile.value)}
                                 className={cn(
-                                  "text-left px-3.5 py-3 rounded-xl border-2 transition-all duration-150",
+                                  "text-left px-4 py-4 rounded-xl border-2 transition-all duration-150",
                                   field.value === profile.value
                                     ? "border-blue-500 bg-blue-50"
                                     : "border-border hover:border-blue-200 hover:bg-gray-50"
                                 )}
                               >
-                                <div className="flex items-start justify-between gap-1">
+                                <div className="flex items-start justify-between gap-2">
                                   <div className="flex-1">
                                     <p className="text-sm font-semibold text-foreground">{profile.label}</p>
-                                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{profile.description}</p>
+                                    <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">{profile.description}</p>
                                   </div>
                                   {field.value === profile.value && (
                                     <div
