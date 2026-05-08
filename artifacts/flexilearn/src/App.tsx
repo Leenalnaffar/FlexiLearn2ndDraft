@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
+import { Switch, Route, Router as WouterRouter, Redirect, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useFlexiLearnStore } from "@/store";
 import { AgentOrchestrationProvider } from "@/context/agent-orchestration";
-import NotFound from "@/pages/not-found";
 import WelcomePage from "@/pages/welcome";
 import OnboardingPage from "@/pages/onboarding";
 import DashboardPage from "@/pages/dashboard";
@@ -93,7 +92,7 @@ function Router() {
         <Route path="/skills" component={SkillsPage} />
         <Route path="/workspace" component={WorkspacePage} />
         <Route path="/analytics" component={AnalyticsPage} />
-        <Route component={NotFound} />
+        <Route path="*"><Redirect to="/" /></Route>
       </Switch>
     </ProfileGuard>
   );
