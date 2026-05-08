@@ -11,7 +11,6 @@ import OnboardingPage from "@/pages/onboarding";
 import DashboardPage from "@/pages/dashboard";
 import LearningPathPage from "@/pages/learning-path";
 import SkillsPage from "@/pages/skills";
-import AccessibilityPage from "@/pages/accessibility";
 import WorkspacePage from "@/pages/workspace";
 import AnalyticsPage from "@/pages/analytics";
 
@@ -94,7 +93,6 @@ function Router() {
         <Route path="/skills" component={SkillsPage} />
         <Route path="/workspace" component={WorkspacePage} />
         <Route path="/analytics" component={AnalyticsPage} />
-        <Route path="/accessibility" component={AccessibilityPage} />
         <Route component={NotFound} />
       </Switch>
     </ProfileGuard>

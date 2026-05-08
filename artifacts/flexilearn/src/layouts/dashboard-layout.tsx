@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
-import { BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp, UserPlus, Home } from "lucide-react";
-import { useEffect, useState } from "react";
+import { BarChart2, GraduationCap, ChevronRight, Brain, TrendingUp, UserPlus, Home } from "lucide-react";
+import { useState } from "react";
 import AgentCommandCenter from "@/components/agent-command-center";
 import { useFlexiLearnStore } from "@/store";
 import { cn } from "@/lib/utils";
@@ -9,7 +9,6 @@ const navItems = [
   { href: "/workspace", label: "Start Learning", icon: Brain },
   { href: "/skills", label: "Skills Mastery", icon: BarChart2 },
   { href: "/analytics", label: "Progress Analytics", icon: TrendingUp },
-  { href: "/accessibility", label: "Accessibility Settings", icon: Settings },
 ];
 
 const STYLE_OPTIONS = [
