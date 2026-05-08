@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "Q6pMBy7rLXZR65B_glTAu"
+uri = "file://exports/agentic-loop-infographic.jpg"
+type = "image"
+title = "FlexiLearn — Agentic Learning Loop Infographic"
