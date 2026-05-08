@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp, UserPlus } from "lucide-react";
-import { useGetCurrentLearnerProfile } from "@workspace/api-client-react";
+import { useGetCurrentLearnerProfile, getGetCurrentLearnerProfileQueryKey } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import AgentCommandCenter from "@/components/agent-command-center";
 import { useFlexiLearnStore } from "@/store";
@@ -55,6 +56,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, title, noPadding }: DashboardLayoutProps) {
   const [location, navigate] = useLocation();
+  const queryClient = useQueryClient();
   const { data: profile } = useGetCurrentLearnerProfile();
   const store = useFlexiLearnStore();
   const { setProfile, setProfileOverride, profileOverride, getActiveStyle, getActiveNeuro, resetForNewUser } = store;
@@ -83,6 +85,7 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
 
   function handleSwitchUser() {
     resetForNewUser();
+    queryClient.removeQueries({ queryKey: getGetCurrentLearnerProfileQueryKey() });
     navigate("/onboarding");
   }
 

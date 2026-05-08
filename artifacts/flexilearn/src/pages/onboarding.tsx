@@ -3,7 +3,8 @@ import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useCreateLearnerProfile } from "@workspace/api-client-react";
+import { useCreateLearnerProfile, getGetCurrentLearnerProfileQueryKey } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { GraduationCap, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -44,6 +45,7 @@ const steps = ["Learning Style", "Your Profile", "Your Name"];
 
 export default function OnboardingPage() {
   const [, setLocation] = useLocation();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
   const [step2Data, setStep2Data] = useState<Step2Data | null>(null);
@@ -86,7 +88,10 @@ export default function OnboardingPage() {
         },
       },
       {
-        onSuccess: () => setLocation("/dashboard"),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: getGetCurrentLearnerProfileQueryKey() });
+          setLocation("/dashboard");
+        },
       }
     );
   };

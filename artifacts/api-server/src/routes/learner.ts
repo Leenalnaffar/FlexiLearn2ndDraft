@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { desc } from "drizzle-orm";
 import { db, learnerProfilesTable } from "@workspace/db";
 import {
   CreateLearnerProfileBody,
@@ -11,7 +12,7 @@ router.get("/learner-profiles/current", async (req, res): Promise<void> => {
   const [profile] = await db
     .select()
     .from(learnerProfilesTable)
-    .orderBy(learnerProfilesTable.createdAt)
+    .orderBy(desc(learnerProfilesTable.createdAt))
     .limit(1);
 
   if (!profile) {
@@ -29,6 +30,8 @@ router.post("/learner-profiles", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
+
+  await db.delete(learnerProfilesTable);
 
   const [profile] = await db
     .insert(learnerProfilesTable)
