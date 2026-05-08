@@ -100,6 +100,7 @@ interface FlexiLearnStore {
   getWeakTopics: () => TopicMastery[];
   getMasteredTopics: () => TopicMastery[];
   clearTopics: () => void;
+  resetForNewUser: () => void;
 }
 
 export const useFlexiLearnStore = create<FlexiLearnStore>()(
@@ -198,6 +199,19 @@ export const useFlexiLearnStore = create<FlexiLearnStore>()(
       },
 
       clearTopics: () => set({ topicMastery: {}, interactionHistory: [], engagementScore: 0, sessionInteractions: 0 }),
+
+      resetForNewUser: () => set({
+        profile: null,
+        profileOverride: null,
+        topicMastery: {},
+        engagementScore: 0,
+        sessionInteractions: 0,
+        xp: 0,
+        currentConversationId: null,
+        agents: defaultAgents(),
+        interactionHistory: [],
+        accessibility: defaultAccessibility(),
+      }),
     }),
     {
       name: "flexilearn-store-v3",

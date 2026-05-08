@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
-import { BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp } from "lucide-react";
+import { BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp, UserPlus } from "lucide-react";
 import { useGetCurrentLearnerProfile } from "@workspace/api-client-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AgentCommandCenter from "@/components/agent-command-center";
 import { useFlexiLearnStore } from "@/store";
 import { cn } from "@/lib/utils";
@@ -54,10 +54,11 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children, title, noPadding }: DashboardLayoutProps) {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const { data: profile } = useGetCurrentLearnerProfile();
   const store = useFlexiLearnStore();
-  const { setProfile, setProfileOverride, profileOverride, getActiveStyle, getActiveNeuro } = store;
+  const { setProfile, setProfileOverride, profileOverride, getActiveStyle, getActiveNeuro, resetForNewUser } = store;
+  const [confirmSwitch, setConfirmSwitch] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -78,6 +79,11 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
 
   function handleNeuroSwitch(neuro: string) {
     setProfileOverride({ learningStyle: activeStyle, neuroProfile: neuro });
+  }
+
+  function handleSwitchUser() {
+    resetForNewUser();
+    navigate("/onboarding");
   }
 
   const isOverriding = profileOverride !== null;
@@ -187,7 +193,7 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
         </div>
 
         {/* Profile footer */}
-        <div className="px-3 py-4 mt-auto">
+        <div className="px-3 py-4 mt-auto space-y-2">
           <div className="px-3 py-3 rounded-lg" style={{ backgroundColor: "rgba(255,255,255,0.05)" }} data-testid="sidebar-profile">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
@@ -203,6 +209,36 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
               <p className="text-white/40 text-xs">No profile set</p>
             )}
           </div>
+
+          {/* Switch User button */}
+          {!confirmSwitch ? (
+            <button
+              onClick={() => setConfirmSwitch(true)}
+              className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-white/50 hover:text-white hover:bg-white/8 transition-all group text-left"
+            >
+              <UserPlus className="w-4 h-4 flex-shrink-0 group-hover:text-blue-400 transition-colors" />
+              <span className="text-xs font-medium">New User / Switch Profile</span>
+            </button>
+          ) : (
+            <div className="px-3 py-3 rounded-lg border border-red-500/30 bg-red-500/10 space-y-2">
+              <p className="text-white/80 text-xs font-semibold">Start fresh for a new user?</p>
+              <p className="text-white/40 text-[10px]">All current progress, topics, and XP will be cleared. You'll be taken to setup.</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setConfirmSwitch(false)}
+                  className="flex-1 py-1.5 rounded-md text-[11px] font-semibold text-white/50 hover:text-white/80 border border-white/10 hover:border-white/20 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSwitchUser}
+                  className="flex-1 py-1.5 rounded-md text-[11px] font-bold text-white bg-blue-600 hover:bg-blue-500 transition-all"
+                >
+                  Yes, switch
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </aside>
 
