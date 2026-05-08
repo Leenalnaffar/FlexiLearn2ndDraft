@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCreateLearnerProfile, getGetCurrentLearnerProfileQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useFlexiLearnStore } from "@/store";
 import { GraduationCap, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -46,9 +47,12 @@ const steps = ["Learning Style", "Your Profile", "Your Name"];
 export default function OnboardingPage() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const { setProfile } = useFlexiLearnStore();
   const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
   const [step2Data, setStep2Data] = useState<Step2Data | null>(null);
+
+  const prefilledName = new URLSearchParams(window.location.search).get("name") ?? "";
 
   const createProfile = useCreateLearnerProfile();
 
@@ -64,7 +68,7 @@ export default function OnboardingPage() {
 
   const step3Form = useForm<Step3Data>({
     resolver: zodResolver(step3Schema),
-    defaultValues: { displayName: "" },
+    defaultValues: { displayName: prefilledName },
   });
 
   const handleStep1Submit = (data: Step1Data) => {
@@ -89,8 +93,13 @@ export default function OnboardingPage() {
       },
       {
         onSuccess: () => {
+          setProfile({
+            displayName: data.displayName,
+            learningStyle: step1Data.learningStyle,
+            neuroProfile: step2Data.neurodivergentProfile,
+          });
           queryClient.invalidateQueries({ queryKey: getGetCurrentLearnerProfileQueryKey() });
-          setLocation("/dashboard");
+          setLocation("/workspace");
         },
       }
     );

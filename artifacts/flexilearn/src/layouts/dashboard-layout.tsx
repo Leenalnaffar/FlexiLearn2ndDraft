@@ -1,7 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp, UserPlus } from "lucide-react";
-import { useGetCurrentLearnerProfile, getGetCurrentLearnerProfileQueryKey } from "@workspace/api-client-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { BarChart2, Settings, GraduationCap, ChevronRight, Brain, TrendingUp, UserPlus, Home } from "lucide-react";
 import { useEffect, useState } from "react";
 import AgentCommandCenter from "@/components/agent-command-center";
 import { useFlexiLearnStore } from "@/store";
@@ -56,21 +54,10 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, title, noPadding }: DashboardLayoutProps) {
   const [location, navigate] = useLocation();
-  const queryClient = useQueryClient();
-  const { data: profile } = useGetCurrentLearnerProfile();
   const store = useFlexiLearnStore();
-  const { setProfile, setProfileOverride, profileOverride, getActiveStyle, getActiveNeuro, resetForNewUser } = store;
+  const { setProfileOverride, profileOverride, getActiveStyle, getActiveNeuro, resetForNewUser } = store;
+  const currentProfile = store.profile;
   const [confirmSwitch, setConfirmSwitch] = useState(false);
-
-  useEffect(() => {
-    if (profile) {
-      setProfile({
-        displayName: profile.displayName,
-        learningStyle: profile.learningStyle,
-        neuroProfile: profile.neurodivergentProfile,
-      });
-    }
-  }, [profile, setProfile]);
 
   const activeStyle = getActiveStyle();
   const activeNeuro = getActiveNeuro();
@@ -85,8 +72,11 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
 
   function handleSwitchUser() {
     resetForNewUser();
-    queryClient.removeQueries({ queryKey: getGetCurrentLearnerProfileQueryKey() });
-    navigate("/onboarding");
+    navigate("/welcome");
+  }
+
+  function handleGoHome() {
+    navigate("/welcome");
   }
 
   const isOverriding = profileOverride !== null;
@@ -202,9 +192,9 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
               <div className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
               <span className="text-white/50 text-xs font-medium uppercase tracking-wider">Active Profile</span>
             </div>
-            {profile ? (
+            {currentProfile ? (
               <div className="space-y-1">
-                <p className="text-white/90 text-sm font-medium">{profile.displayName}</p>
+                <p className="text-white/90 text-sm font-medium">{currentProfile.displayName}</p>
                 <p className="text-blue-300 text-xs">{formatLearningStyle(activeStyle)}</p>
                 <p className="text-green-300/80 text-xs">{formatProfile(activeNeuro)}</p>
               </div>
@@ -251,8 +241,19 @@ export default function DashboardLayout({ children, title, noPadding }: Dashboar
           <div className="flex items-center gap-3">
             {title && <h2 className="text-base font-semibold text-foreground">{title}</h2>}
           </div>
-          <div className="flex items-center gap-2">
-            {profile ? (
+          <div className="flex items-center gap-3">
+            {/* Home button */}
+            <button
+              onClick={handleGoHome}
+              title="Go to home screen"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-blue-400 hover:bg-blue-50/60 transition-all group"
+            >
+              <Home className="w-3.5 h-3.5 transition-colors group-hover:text-blue-600" style={{ color: "#3B5BDB" }} />
+              <span className="text-xs font-medium" style={{ color: "#3B5BDB" }}>Home</span>
+            </button>
+
+            {/* Profile badge */}
+            {currentProfile ? (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-background" data-testid="header-profile-badge">
                 <div className={cn("w-1.5 h-1.5 rounded-full", isOverriding ? "bg-yellow-400 animate-pulse" : "bg-green-400 animate-pulse")} />
                 <span className="text-xs font-medium text-foreground">{formatLearningStyle(activeStyle)}</span>

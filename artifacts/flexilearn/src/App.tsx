@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useFlexiLearnStore } from "@/store";
 import { AgentOrchestrationProvider } from "@/context/agent-orchestration";
 import NotFound from "@/pages/not-found";
+import WelcomePage from "@/pages/welcome";
 import OnboardingPage from "@/pages/onboarding";
 import DashboardPage from "@/pages/dashboard";
 import LearningPathPage from "@/pages/learning-path";
@@ -60,25 +61,43 @@ function GlobalAccessibilityApplicator() {
       "high-contrast": "high-contrast",
     };
     body.setAttribute("data-theme", themeMap[accessibility.theme] ?? "");
-
   }, [accessibility]);
 
   return null;
 }
 
+const UNAUTHENTICATED_PATHS = ["/welcome", "/onboarding"];
+
+function ProfileGuard({ children }: { children: React.ReactNode }) {
+  const profile = useFlexiLearnStore((s) => s.profile);
+  const [location, navigate] = useLocation();
+
+  useEffect(() => {
+    const isPublic = UNAUTHENTICATED_PATHS.some((p) => location.startsWith(p));
+    if (!profile && !isPublic) {
+      navigate("/welcome");
+    }
+  }, [profile, location, navigate]);
+
+  return <>{children}</>;
+}
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={DashboardPage} />
-      <Route path="/onboarding" component={OnboardingPage} />
-      <Route path="/dashboard" component={DashboardPage} />
-      <Route path="/learning-path" component={LearningPathPage} />
-      <Route path="/skills" component={SkillsPage} />
-      <Route path="/workspace" component={WorkspacePage} />
-      <Route path="/analytics" component={AnalyticsPage} />
-      <Route path="/accessibility" component={AccessibilityPage} />
-      <Route component={NotFound} />
-    </Switch>
+    <ProfileGuard>
+      <Switch>
+        <Route path="/" component={DashboardPage} />
+        <Route path="/welcome" component={WelcomePage} />
+        <Route path="/onboarding" component={OnboardingPage} />
+        <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/learning-path" component={LearningPathPage} />
+        <Route path="/skills" component={SkillsPage} />
+        <Route path="/workspace" component={WorkspacePage} />
+        <Route path="/analytics" component={AnalyticsPage} />
+        <Route path="/accessibility" component={AccessibilityPage} />
+        <Route component={NotFound} />
+      </Switch>
+    </ProfileGuard>
   );
 }
 
